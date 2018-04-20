@@ -1,0 +1,22 @@
+{
+    "name": "axelspringer/wp-s3",
+    "type": "wordpress-plugin",
+    "homepage": "https://github.com/axelspringer/wp-s3",
+    "license": "Apache-2.0",
+    "description": "A companion WordPress Plugin for S3.",
+    "keywords": [
+        "plugin",
+        "aws",
+        "wordpress",
+        "s3"
+    ],
+    "autoload": {
+        "psr-4": {
+          "AxelSpringer\\WP\\S3\\": "src/"
+        }
+    },
+    "require": {
+        "composer/installers": "~1.0.6",
+        "aws/aws-sdk-php": "^3.54"
+    }
+}
