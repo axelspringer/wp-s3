@@ -9,4 +9,5 @@ abstract class __PLUGIN__
 
     const TEXT_DOMAIN   = 'wps3';
     const SETTINGS_PAGE = 'wps3_settings_page';
+    const SETTINGS_PERMISSION = 'manage_options';
 }

@@ -2,93 +2,119 @@
 
 namespace AxelSpringer\WP\S3;
 
-use AxelSpringer\WP\S3\__PLUGIN__;
+use AxelSpringer\WP\Bootstrap\Plugin\AbstractPlugin;
+use Aws\Credentials\CredentialProvider;
 
 /**
  * Class Plugin
  *
  * @package AxelSpringer\WP\S3
  */
-class Plugin
+class Plugin extends AbstractPlugin
 {
     /**
-     * WPS3 slug
-     * 
-     * @var string
-     */
-    static $slug;
-
-    /**
-     * WPS3 plugin file
+     * Client
      *
-     * @var string
+     * @var Client
      */
-    public $plugin_file;
+    public $client;
 
     /**
-     * WPS3 version
+     * Filter
      *
-     * @var string
+     * @var Filter
      */
-    public $version;
+    public $filter;
 
     /**
-     * WPS3 settings page
-     * 
-     * @var Settings
-     */
-    public $settings;
-
-    /**
-     * WPS3 constructor
+     * Filter
      *
-     * @param string $version
-     * @param null $plugin_file
+     * @var Actions
      */
-    public function __construct( string $slug, $version = null, string $plugin_file )
-    {
-        $this->plugin_file = $plugin_file;
-        $this->version = $version;
-        $this->slug = $slug;
+    public $actions;
 
-        $this->init();
-    }
 
     /**
-     * Initializes WPS3
+     * Initializes the plugin
      */
     public function init()
     {
-        // settings page
-        $settings = new Settings(
+        // load options
+        $this->setup->load_options( 'AxelSpringer\WP\S3\__OPTION__' );
+        $this->settings = new Settings(
+            __( __TRANSLATE__::SETTINGS_PAGE_TITLE ),
+            __( __TRANSLATE__::SETTINGS_MENU_TITLE ),
             __PLUGIN__::SETTINGS_PAGE,
-            __TRANSLATE__::SETTINGS_PAGE_TITLE,
-            __TRANSLATE__::SETTINGS_MENU_TITLE
+            __PLUGIN__::SETTINGS_PERMISSION,
+            $this->setup->version
         );
 
-        return;
+        // use default provider
+        $provider = CredentialProvider::defaultProvider();
+
+        // new S3 client
+        $this->client   = new Client( $this->setup->options, $provider );
+        $this->filters  = new Filters( $this->client );
+        $this->actions  = new Actions( $this->client );
     }
 
     /**
-     * Activates the WPS3 plugin
+     * Activates the Bootstrap plugin
      *
      * @return bool
      */
     public static function activation()
     {
-        $setup = new Setup();
-        $success = $setup->update_version();
-
-        return $success;
+        // noop
+		return true;
     }
 
     /**
-     * Deactivates the WPS3 plugin
+     * Do actions after init
+     */
+    public function after_init()
+    {
+        // noop
+    }
+
+    /**
+     * Deactivates the Bootstrap plugin
      *
-     * @return void
+     * @return bool
      */
     public static function deactivation()
     {
-        return;
+        // noop
+		return true;
     }
+
+    /**
+     * Loads the required WP hooks
+     *
+     * @return
+     */
+    public function load_hooks()
+    {
+        // $filters =
+    }
+
+    /**
+     * Enqueue required scripts
+     *
+     * @return
+     */
+    public function enqueue_scripts()
+    {
+
+    }
+
+    /**
+     * Enqueue shared styles and scripts
+     *
+     * @return
+     */
+    public function enqueue_admin_scripts()
+    {
+
+	}
 }

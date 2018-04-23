@@ -17,6 +17,9 @@
     },
     "require": {
         "composer/installers": "~1.0.6",
-        "aws/aws-sdk-php": "^3.54"
+        "aws/aws-sdk-php": "^3.54",
+        "axelspringer/wp-bootstrap": "dev-master",
+        "guzzlehttp/guzzle": "^6.3",
+        "doctrine/common": "^2.8"
     }
 }

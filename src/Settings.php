@@ -2,108 +2,65 @@
 
 namespace AxelSpringer\WP\S3;
 
+use AxelSpringer\WP\Bootstrap\Settings\AbstractSettings;
+use AxelSpringer\WP\Bootstrap\Settings\Page;
+use AxelSpringer\WP\Bootstrap\Settings\Field;
+use AxelSpringer\WP\Bootstrap\Settings\Section;
+
 /**
  * Class Settings
  *
- * @package AxelSpringer\WP\S3
+ * @package AxelSpringer\WP\Bootstrap
  */
-class Settings implements SettingsInterface
-{
-    /**
-     * 
-     */
-    public $page;
-    
-    /**
-     * 
-     */
-    public $page_title;
-    
-    /**
-     * 
-     */
-    public $menu_title;
+class Settings extends AbstractSettings {
 
     /**
-     * Settings Constructor
-     *
-     * @param string $plugin_file
-     * @param null $version
+     * Loading the settings for the plugin
      */
-    function __construct( $page, $page_title = null, $menu_title = null )
+    public function load_settings()
     {
-        $this->page = $page;
-        $this->page_title = $page_title;
-        $this->menu_title = $menu_title;
-
-        // call to hooks
-        $this->add_actions();
-        $this->add_filters();
-
-        // add_action( 'admin_init', array( &$this, 'register_settings' ) );
-		// add_action( 'admin_notices', array( &$this, 'admin_notices' ) );
-        // add_action( 'admin_enqueue_scripts',array( &$this, 'admin_scripts' ) );
-    }
-
-    /**
-     * 
-     */
-    public function add_actions()
-    {
-        add_action( 'admin_menu', array( &$this, 'add_options_page' ) );
-    }
-
-    /**
-     * 
-     */
-    public function add_filters()
-    {
-        // noop
-    }
-    
-    /**
-     * 
-     */
-    public function add_options_page()
-    {
-        $settings_page = add_options_page(
-            __( $this->page_title, __PLUGIN__::TEXT_DOMAIN ),
-            __( $this->menu_title, __PLUGIN__::TEXT_DOMAIN ),
-            'manage_options',
-            $this->page,
-            array( &$this, 'settings_page' )
+        $args = array(
+            'id'			  => 'wps3_general',
+            'title'			  => __( __TRANSLATE__::SETTINGS_SECTION_GENERAL, __PLUGIN__::TEXT_DOMAIN ),
+            'page'			  => $this->page,
+            'description'	  => '',
         );
-    }
+        $general = new Section( $args );
 
-    /**
-     * 
-     */
-    public function register_settings()
-    {
+        $args = array(
+            'id'	        => 'wps3_bucket',
+            'title'		    => 'Bucket',
+            'page'			=> $this->page,
+            'section'		=> 'wps3_general',
+            'description'   => '',
+            'type'		    => 'text', // text, textarea, password, checkbox
+            'multi'		    => false,
+            'option_group'	=> $this->page
+        );
+        $general_bucket = new Field( $args );
 
-    }
+        $args = array(
+            'id'	        => 'wps3_region',
+            'title'		    => 'Region',
+            'page'			=> $this->page,
+            'section'		=> 'wps3_general',
+            'description'   => '',
+            'type'		    => 'text', // text, textarea, password, checkbox
+            'multi'		    => false,
+            'option_group'	=> $this->page
+        );
+        $region = new Field( $args );
 
-    /**
-     * 
-     */
-    public function admin_notices()
-    {
-
-    }
-
-    /**
-     * 
-     */
-    public function admin_enqueue_scripts()
-    {
-
-    }
-
-    /**
-     * noop
-     */
-    protected function __clone()
-    {
-
+        $args = array(
+            'id'	        => 'wps3_credentials_cache',
+            'title'		    => 'Credentials Cache',
+            'page'			=> $this->page,
+            'section'		=> 'wps3_general',
+            'description'   => '',
+            'type'		    => 'checkbox', // text, textarea, password, checkbox
+            'multi'		    => false,
+            'option_group'	=> $this->page
+        );
+        $credentials_cache = new Field( $args );
     }
 }
