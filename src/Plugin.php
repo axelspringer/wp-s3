@@ -48,6 +48,8 @@ class Plugin extends AbstractPlugin
             __PLUGIN__::SETTINGS_PERMISSION,
             $this->setup->version
         );
+        // https://github.com/axelspringer/templeton
+        $this->setup->load_options( 'AxelSpringer\WP\S3\__SSM__' );
 
         // check for options
         if ( ! $this->setup->options[ 'wps3_endpoint' ]
