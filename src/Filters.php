@@ -16,6 +16,12 @@ class Filters
      */
     private $client;
 
+    /**
+     * Unique files
+     *
+     */
+    private $unique_files = [];
+
      /**
      * Client constructor
      *
@@ -51,19 +57,22 @@ class Filters
     }
 
     /**
+     * Prefilter file uploads
      *
+     * @param array $file
+     * @return array $file
      */
     public function filter_upload_prefilter( $file )
     {
-        if ( ! $this->options[ 'wps3_unique_filename' ] )
+        if ( ! $this->client->options[ 'wps3_unique_filename' ] )
             return $file;
 
         $file_info  = pathinfo( $file['name'] );
         $file_hash  = crc32( json_encode( array( $file_info['basename'], current_time( 'mysql' ) ) ) );
         $file_time  = date( 'Ymd', current_time( 'timestamp', 0 ) );
         $file_ext   = $file_info['extension'];
+        // set filename
         $file['name'] = "$file_time-$file_hash.$file_ext";
-        return $file;
 
         return $file;
     }

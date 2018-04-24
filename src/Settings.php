@@ -35,7 +35,8 @@ class Settings extends AbstractSettings {
             'description'   => 'The url to bucket (e.g. https://example.s3.amazonaws.com)',
             'type'		    => 'text', // text, textarea, password, checkbox
             'multi'		    => false,
-            'option_group'	=> $this->page
+            'option_group'	=> $this->page,
+            'disabled'      => !!getenv( 'WPS3_ENDPOINT' )
         );
         $endpoint = new Field( $args );
 
@@ -47,7 +48,8 @@ class Settings extends AbstractSettings {
             'description'   => 'The url of the bucket (example)',
             'type'		    => 'text', // text, textarea, password, checkbox
             'multi'		    => false,
-            'option_group'	=> $this->page
+            'option_group'	=> $this->page,
+            'disabled'      => !!getenv( 'WPS3_BUCKET' )
         );
         $endpoint = new Field( $args );
 
@@ -59,7 +61,8 @@ class Settings extends AbstractSettings {
             'description'   => '',
             'type'		    => 'text', // text, textarea, password, checkbox
             'multi'		    => false,
-            'option_group'	=> $this->page
+            'option_group'	=> $this->page,
+            'disabled'      => !!getenv( 'WPS3_REGION' )
         );
         $region = new Field( $args );
 
@@ -79,7 +82,8 @@ class Settings extends AbstractSettings {
             'description'   => '',
             'type'		    => 'text', // text, textarea, password, checkbox
             'multi'		    => false,
-            'option_group'	=> $this->page
+            'option_group'	=> $this->page,
+            'disabled'      => !!getenv( 'WPS3_ACCESS_KEY' )
         );
         $access_key = new Field( $args );
 
@@ -91,7 +95,8 @@ class Settings extends AbstractSettings {
             'description'   => '',
             'type'		    => 'text', // text, textarea, password, checkbox
             'multi'		    => false,
-            'option_group'	=> $this->page
+            'option_group'	=> $this->page,
+            'disabled'      => !!getenv( 'WPS3_SECRET_ACCESS_KEY' )
         );
         $secret_access_key = new Field( $args );
 
@@ -104,11 +109,23 @@ class Settings extends AbstractSettings {
         $advanced = new Section( $args );
 
         $args = array(
+            'id'	        => 'wps3_filter_attachments',
+            'title'		    => 'Filter Attachments',
+            'page'			=> $this->page,
+            'section'		=> 'wps3_advanced',
+            'description'   => 'Filters the attachment URL',
+            'type'		    => 'checkbox', // text, textarea, password, checkbox
+            'multi'		    => false,
+            'option_group'	=> $this->page
+        );
+        $filter_attachments = new Field( $args );
+
+        $args = array(
             'id'	        => 'wps3_credentials_cache',
             'title'		    => 'Credentials Cache',
             'page'			=> $this->page,
             'section'		=> 'wps3_advanced',
-            'description'   => '',
+            'description'   => 'Caches the EC2 Metadata credentials',
             'type'		    => 'checkbox', // text, textarea, password, checkbox
             'multi'		    => false,
             'option_group'	=> $this->page
@@ -120,7 +137,7 @@ class Settings extends AbstractSettings {
             'title'		    => 'Unique Filename',
             'page'			=> $this->page,
             'section'		=> 'wps3_advanced',
-            'description'   => '',
+            'description'   => 'Generates unique filenames',
             'type'		    => 'checkbox', // text, textarea, password, checkbox
             'multi'		    => false,
             'option_group'	=> $this->page

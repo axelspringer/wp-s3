@@ -11,6 +11,7 @@ abstract class __OPTION__
     const WPS3_UNIQUE_FILENAME      = false;
     const WPS3_ACCESS_KEY           = false;
     const WPS3_SECRET_ACCESS_KEY    = false;
+    const WPS3_FILTER_ATTACHMENTS   = false;
 }
 
 
