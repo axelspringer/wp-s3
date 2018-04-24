@@ -49,13 +49,20 @@ class Plugin extends AbstractPlugin
             $this->setup->version
         );
 
+        // check for options
+        if ( ! $this->setup->options[ 'wps3_endpoint' ]
+            || ! $this->setup->options[ 'wps3_region' ]
+            || ! $this->setup->options[ 'wps3_bucket' ] )
+            return; // check required options
+
         // use default provider
-        $provider = CredentialProvider::defaultProvider();
+        $provider = $this->load_provider();
 
         // new S3 client
-        $this->client   = new Client( $this->setup->options, $provider );
-        $this->filters  = new Filters( $this->client );
-        $this->actions  = new Actions( $this->client );
+        $this->client = new Client( $this->setup->options, $provider );
+
+        // load hooks
+        $this->load_hooks();
     }
 
     /**
@@ -95,7 +102,28 @@ class Plugin extends AbstractPlugin
      */
     public function load_hooks()
     {
-        // $filters =
+        $this->filters  = new Filters( $this->client );
+        $this->actions  = new Actions( $this->client );
+    }
+
+    /**
+     * Credentials
+     *
+     * @return
+     */
+    public function load_provider()
+    {
+        $secret_access_key = $this->setup->options[ 'wps3_secret_access_key' ];
+        $access_key = $this->setup->options[ 'wps3_access_key' ];
+
+        if ( $secret_access_key && $access_key ) // use access key
+            return [
+                'key'    => $access_key,
+                'secret' => $secret_access_key,
+            ];
+
+        // use credentials provider
+        return CredentialProvider::defaultProvider();
     }
 
     /**

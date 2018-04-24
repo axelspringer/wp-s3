@@ -21,5 +21,9 @@
         "axelspringer/wp-bootstrap": "dev-master",
         "guzzlehttp/guzzle": "^6.3",
         "doctrine/common": "^2.8"
+    },
+    "scripts": {
+        "post-install-cmd": ["composer dump-autoload"],
+        "post-update-cmd": ["composer dump-autoload"]
     }
 }

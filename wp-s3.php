@@ -37,11 +37,6 @@ if ( file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
 	$loader->addPsr4( 'AxelSpringer\\WP\\S3\\', __DIR__ . '/src' );
 }
 
-// if not composer, do autoloading
-if ( ! class_exists( 'AxelSpringer\WP\S3\Plugin' ) ) {
-    include_once __DIR__ . '/autoloader.php';
-}
-
 use \AxelSpringer\WP\S3\__WP__ as WP;
 use \AxelSpringer\WP\S3\__PLUGIN__ as Plugin;
 use \AxelSpringer\WP\S3\Plugin as S3;

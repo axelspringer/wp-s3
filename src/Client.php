@@ -37,9 +37,21 @@ class Client implements ClientInterface
     private $cache_adapter;
 
     /**
+     * Options
      *
+     * @var array
      */
-    private $options;
+    public $options;
+
+    /**
+     * Uri
+     */
+    public $uri;
+
+    /**
+     * Args
+     */
+    public $args = [];
 
     /**
      * Client constructor
@@ -56,30 +68,57 @@ class Client implements ClientInterface
         if ( $this->options[ 'wps3_credentials_cache' ] ) // use cache adapter
             $this->cache_adapter = new DoctrineCacheAdapter( new ApcuCache );
 
-        // new client
-        $this->client = new S3Client( [
-            'profile' => 'default',
+        // client args
+        $args = [
             'region'            => $options[ 'wps3_region' ],
             'credentials'       => $this->provider,
             'version'           => $version,
+            'use_path_style_endpoint' => true
             // 'credentials'       => ! $this->options[ 'wps3_credentials_cache' ] ? $this->provider : $this->cache_adapter
-        ] );
+        ];
 
-        $this->client->registerStreamWrapper();
+        // set client args
+        $this->set_args( $args );
+
+        // new client
+        $this->set_client ( new S3Client( $this->args ) );
     }
 
     /**
      * Set the client
      */
-    public function set_client( $client )
+    public function set_client( $client, $stream = 's3', $seekable = true, $acl = __ACL__::PUBLIC_READ )
     {
         $this->client = $client;
+        $this->client->registerStreamWrapper();
+
+        // setup stream context
+        stream_context_set_option( stream_context_get_default(), $stream, 'ACL', $acl );
+        stream_context_set_option( stream_context_get_default(), $stream, 'seekable', $seekable );
+    }
+
+    /**
+     * Set URI
+     *
+     * @param string $uri
+     */
+    public function set_uri( string $uri )
+    {
+        $this->uri = $uri;
+    }
+
+    /**
+     * Set args
+     */
+    public function set_args( array $args )
+    {
+        $this->args = array_merge( $this->args, $args );
     }
 
     /**
      * Get the client
      */
-    public function get_client()
+    public function get_client( )
     {
         return $this->client;
     }
@@ -87,18 +126,20 @@ class Client implements ClientInterface
     /**
      *
      */
-    public function get_s3path()
+    public function get_s3path( $subdir = "" )
     {
-        $bucket = $this->options['wps3_bucket'];
-        return "s3://$bucket";
+        $bucket = $this->options[ 'wps3_bucket' ];
+        return "s3://$bucket$subdir";
     }
 
     /**
      * Get the url
      */
-    public function get_url()
+    public function get_url( $subdir = "" )
     {
-        return "https://axelspringer-prod-mango-static-master.s3.amazonaws.com";
+        // todo: use other domain
+        $endpoint = $this->options[ 'wps3_endpoint' ];
+        return "$endpoint$subdir";
     }
 
     /**

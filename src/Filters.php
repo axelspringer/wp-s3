@@ -28,19 +28,20 @@ class Filters
         // register filters
         add_filter( 'upload_dir', array( &$this, 'filter_upload_dir' ) );
         // add_filter( 'pre_option_uploads_use_yearmonth_folders', '__return_null' );
-        // add_filter( 'plupload_init', array( &$this, 'plupload_init' ) );
-        // add_filter( 'wp_handle_upload ', 'custom_upload_filter' );
-        // add_filter( 'wp_handle_upload_prefilter', array( &$this, 'filter_upload_prefilter' ) );
+        add_filter( 'wp_handle_upload ', 'custom_upload_filter' );
+        add_filter( 'wp_handle_upload_prefilter', array( &$this, 'filter_upload_prefilter' ) );
     }
 
     /**
+     * Filter uploads
      *
+     * @param array $param
      */
     public function filter_upload_dir( $param )
     {
         $param = array(
-            'path'    => $this->client->get_s3path(),
-            'url'     => $this->client->get_url(),
+            'path'    => $this->client->get_s3path( $param[ 'subdir' ] ),
+            'url'     => $this->client->get_url( $param[ 'subdir' ] ),
             'basedir' => $this->client->get_s3path(),
             'baseurl' => $this->client->get_url(),
             'subdir'  => '',
@@ -52,9 +53,19 @@ class Filters
     /**
      *
      */
-    public function filter_upload_prefilter()
+    public function filter_upload_prefilter( $file )
     {
+        if ( ! $this->options[ 'wps3_unique_filename' ] )
+            return $file;
 
+        $file_info  = pathinfo( $file['name'] );
+        $file_hash  = crc32( json_encode( array( $file_info['basename'], current_time( 'mysql' ) ) ) );
+        $file_time  = date( 'Ymd', current_time( 'timestamp', 0 ) );
+        $file_ext   = $file_info['extension'];
+        $file['name'] = "$file_time-$file_hash.$file_ext";
+        return $file;
+
+        return $file;
     }
 
     /**
