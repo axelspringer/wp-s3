@@ -15,6 +15,10 @@
           "AxelSpringer\\WP\\S3\\": "src/"
         }
     },
+    "repositories": [{
+        "type": "composer",
+        "url": "https://wpackagist.org"
+    }],
     "require": {
         "composer/installers": "~1.0.6",
         "aws/aws-sdk-php": "^3.54",
