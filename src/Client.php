@@ -19,6 +19,8 @@ class Client implements ClientInterface
 
     /**
      * Client to access S3
+     *
+     * @var S3Client
      */
     private $client;
 
@@ -54,6 +56,11 @@ class Client implements ClientInterface
     public $args = [];
 
     /**
+     * Stream
+     */
+    public $stream = 's3';
+
+    /**
      * Client constructor
      *
      */
@@ -87,14 +94,48 @@ class Client implements ClientInterface
     /**
      * Set the client
      */
-    public function set_client( $client, $stream = 's3', $seekable = true, $acl = __ACL__::PUBLIC_READ )
+    public function set_client( $client, $stream = 's3', $seekable = true, $acl = ACL::PUBLIC_READ )
     {
         $this->client = $client;
+        $this->stream = $stream;
         $this->client->registerStreamWrapper();
 
         // setup stream context
-        stream_context_set_option( stream_context_get_default(), $stream, 'ACL', $acl );
+        stream_context_set_option( stream_context_get_default(), $stream, Context::ACL, $acl );
         stream_context_set_option( stream_context_get_default(), $stream, 'seekable', $seekable );
+
+        // set cache control
+        $this->set_context_option( Context::CACHE_CONTROL, $this->options[ 'wps3_metadata_cache_control' ] );
+    }
+
+    /**
+     * Set metadata on stream context
+     *
+     * If called without parameter, this should reset metadata
+     *
+     */
+    public function set_metadata( $metadata = array() )
+    {
+        if ( ! $this->client || ! $this->stream ) {
+            return;
+        }
+
+        // set metadata on context
+        $this->set_context_option( Context::METADATA, $metadata );
+    }
+
+    /**
+     * Public set context
+     *
+     * This sets context information
+     */
+    public function set_context_option( $option = '', $value = false )
+    {
+        if ( ! $this->client || ! $this->stream || empty( $option ) || ! $value ) {
+            return;
+        }
+
+        stream_context_set_option( stream_context_get_default(), $this->stream, $option, $value );
     }
 
     /**

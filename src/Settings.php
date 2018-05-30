@@ -101,6 +101,38 @@ class Settings extends AbstractSettings {
         $secret_access_key = new Field( $args );
 
         $args = array(
+            'id'			  => 'wps3_metadata',
+            'title'			  => __( __TRANSLATE__::SETTINGS_SECTION_METADATA, __PLUGIN__::TEXT_DOMAIN ),
+            'page'			  => $this->page,
+            'description'	  => '',
+        );
+        $metadata = new Section( $args );
+
+        $args = array(
+            'id'	        => 'wps3_metadata_imagesizes',
+            'title'		    => 'Image Sizes',
+            'page'			=> $this->page,
+            'section'		=> 'wps3_metadata',
+            'description'   => 'Adds image sizes to the s3 metadata',
+            'type'		    => 'checkbox', // text, textarea, password, checkbox
+            'multi'		    => false,
+            'option_group'	=> $this->page
+        );
+        $imagesizes = new Field( $args );
+
+        $args = array(
+            'id'	        => 'wps3_metadata_cache_control',
+            'title'		    => 'Cache Control',
+            'page'			=> $this->page,
+            'section'		=> 'wps3_metadata',
+            'description'   => 'Sets the CacheControl Header on S3',
+            'type'		    => 'text', // text, textarea, password, checkbox
+            'multi'		    => false,
+            'option_group'	=> $this->page
+        );
+        $cachecontrol = new Field( $args );
+
+        $args = array(
             'id'			  => 'wps3_advanced',
             'title'			  => __( __TRANSLATE__::SETTINGS_SECTION_ADVANCED, __PLUGIN__::TEXT_DOMAIN ),
             'page'			  => $this->page,

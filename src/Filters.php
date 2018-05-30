@@ -36,6 +36,42 @@ class Filters
         // add_filter( 'pre_option_uploads_use_yearmonth_folders', '__return_null' );
         add_filter( 'wp_handle_upload ', 'custom_upload_filter' );
         add_filter( 'wp_handle_upload_prefilter', array( &$this, 'filter_upload_prefilter' ) );
+        add_filter( 'intermediate_image_sizes_advanced', array( &$this, 'intermediate_image_sizes_advanced' ), 99, 1 );
+        add_filter( 'wp_generate_attachment_metadata', array( &$this, 'wp_generate_attachment_metadata' ), 99, 2 );
+    }
+
+    /**
+     * Generate image attachments
+     */
+    public function wp_generate_attachment_metadata( $metadata, $attachment_id )
+    {
+        $sizes = $this->get_all_image_sizes();
+        $pathinfo = pathinfo( $metadata['file'] );
+
+        foreach( $sizes as $size => $data) {
+            $new_size = array(
+                'file'      => $pathinfo['filename'] . '-' . $data['width'] . 'x' . $data['height'], // not so nice
+                'width'     => $data['width'],
+                'height'    => $data['height'],
+                'mime-type' => 'image/jpeg'
+            );
+
+            $metadata['sizes'][$size] = $new_size;
+        }
+
+        return $metadata;
+    }
+
+    /**
+     * Filter image sizes for upload
+     */
+    public function intermediate_image_sizes_advanced( $sizes )
+    {
+        if ( false === $this->client->options['wps3_metadata_imagesizes']) {
+            return $sizes;
+        }
+
+        return []; // do not generate any
     }
 
     /**
@@ -75,6 +111,34 @@ class Filters
         $file['name'] = "$file_time-$file_hash.$file_ext";
 
         return $file;
+    }
+
+    /**
+     * Get all the registered image sizes along with their dimensions
+     *
+     * @global array $_wp_additional_image_sizes
+     *
+     * @link http://core.trac.wordpress.org/ticket/18947 Reference ticket
+     *
+     * @return array $image_sizes The image sizes
+     */
+    public function get_all_image_sizes()
+    {
+        global $_wp_additional_image_sizes;
+
+        $default_image_sizes = get_intermediate_image_sizes();
+
+        foreach ( $default_image_sizes as $size ) {
+            $image_sizes[ $size ][ 'width' ] = intval( get_option( "{$size}_size_w" ) );
+            $image_sizes[ $size ][ 'height' ] = intval( get_option( "{$size}_size_h" ) );
+            $image_sizes[ $size ][ 'crop' ] = get_option( "{$size}_crop" ) ? get_option( "{$size}_crop" ) : false;
+        }
+
+        if ( isset( $_wp_additional_image_sizes ) && count( $_wp_additional_image_sizes ) ) {
+            $image_sizes = array_merge( $image_sizes, $_wp_additional_image_sizes );
+        }
+
+        return $image_sizes;
     }
 
     /**

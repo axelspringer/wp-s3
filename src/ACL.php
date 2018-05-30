@@ -2,7 +2,7 @@
 
 namespace AxelSpringer\WP\S3;
 
-abstract class __ACL__
+abstract class ACL
 {
     const PUBLIC_READ = 'public-read';
 }
