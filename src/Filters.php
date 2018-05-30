@@ -77,7 +77,7 @@ class Filters
     /**
      * Add metadata for file sizes
      */
-    public function set_metadata_sizes( $sizes = array() )
+    public function set_metadata_sizes( $sizes = array(), $prefix = 'wp-size' )
     {
         $metadata = array();
 
@@ -86,7 +86,8 @@ class Filters
         }
 
         foreach( $sizes as $size => $data ) {
-            $metadata[$size] = implode(',', array( $data['width'], $data['height'] ) );
+            $key = implode( '-', array( $prefix, $size) );
+            $metadata[$key] = implode(',', array( $data['width'], $data['height'] ) );
         }
 
         $this->client->set_metadata( $metadata );
