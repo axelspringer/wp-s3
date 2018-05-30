@@ -22,6 +22,7 @@ class Filters
      */
     private $unique_files = [];
 
+
      /**
      * Client constructor
      *
@@ -34,10 +35,61 @@ class Filters
         // register filters
         add_filter( 'upload_dir', array( &$this, 'filter_upload_dir' ) );
         // add_filter( 'pre_option_uploads_use_yearmonth_folders', '__return_null' );
-        add_filter( 'wp_handle_upload ', 'custom_upload_filter' );
+        add_filter( 'wp_handle_upload', array( &$this, 'wp_handle_upload' ) );
         add_filter( 'wp_handle_upload_prefilter', array( &$this, 'filter_upload_prefilter' ) );
-        add_filter( 'intermediate_image_sizes_advanced', array( &$this, 'intermediate_image_sizes_advanced' ), 99, 1 );
+        add_filter( 'intermediate_image_sizes_advanced', array( &$this, 'intermediate_image_sizes_advanced' ), 99, 2 );
         add_filter( 'wp_generate_attachment_metadata', array( &$this, 'wp_generate_attachment_metadata' ), 99, 2 );
+        add_filter( 'pre_move_uploaded_file', array( &$this, 'pre_move_uploaded_file' ), 99, 4 );
+    }
+
+    /**
+     * Filter uploaded data
+     */
+    public function wp_handle_upload( $upload )
+    {
+
+
+        $this->client->set_metadata();
+
+        return $upload;
+    }
+
+    /**
+     *
+     */
+    public function pre_move_uploaded_file( $move_new_file, $file, $new_file, $type )
+    {
+        $moved_file = pathinfo( $new_file );
+        $additional_sizes = $this->get_additional_sizes( $moved_file['basename'] );
+        $add_metadata = true;
+
+        foreach( $additional_sizes as $size => $data ) {
+            if ( $data['file'] === $moved_file['basename'] ) {
+                $add_metadata = false;
+            }
+        }
+
+        $this->set_metadata_sizes( $additional_sizes );
+
+        return $move_new_file;
+    }
+
+    /**
+     * Add metadata for file sizes
+     */
+    public function set_metadata_sizes( $sizes = array() )
+    {
+        $metadata = array();
+
+        if ( false === $this->client->options['wps3_metadata_imagesizes']) {
+            return;
+        }
+
+        foreach( $sizes as $size => $data ) {
+            $metadata[$size] = implode(',', array( $data['width'], $data['height'] ) );
+        }
+
+        $this->client->set_metadata( $metadata );
     }
 
     /**
@@ -49,33 +101,49 @@ class Filters
             return $metadata;
         }
 
-        $sizes = $this->get_all_image_sizes();
-        $pathinfo = pathinfo( $metadata['file'] );
-
-        foreach( $sizes as $size => $data) {
-            $new_size = array(
-                'file'      => $pathinfo['filename'] . '-' . $data['width'] . 'x' . $data['height'], // not so nice
-                'width'     => $data['width'],
-                'height'    => $data['height'],
-                'mime-type' => 'image/jpeg'
-            );
-
-            $metadata['sizes'][$size] = $new_size;
-        }
+        $sizes = $this->get_additional_sizes( $metadata['file'] );
+        $metadata['sizes'] = array_merge( $metadata['sizes'], $sizes );
 
         return $metadata;
     }
 
     /**
+     * Get sizes for filename
+     *
+     */
+    public function get_additional_sizes( $file, $type = 'image/jpeg' )
+    {
+        global $_wp_additional_image_sizes;
+        $file = pathinfo( $file ) ;
+
+        $sizes = [];
+
+        foreach( $_wp_additional_image_sizes as $size => $data ) {
+            $new_size = array(
+                'file'      => $file['filename'] . '-' . $data['width'] . 'x' . $data['height'] . '.' . $file['extension'], // not so nice
+                'width'     => $data['width'],
+                'height'    => $data['height'],
+                'mime-type' => $type
+            );
+
+            $sizes[$size] = $new_size;
+        }
+
+        return $sizes;
+    }
+
+    /**
      * Filter image sizes for upload
      */
-    public function intermediate_image_sizes_advanced( $sizes )
+    public function intermediate_image_sizes_advanced( $sizes, $metadata )
     {
         if ( false === $this->client->options['wps3_metadata_imagesizes']) {
             return $sizes;
         }
 
-        return []; // do not generate any
+        global $_wp_additional_image_sizes;
+
+        return array_diff_assoc( $sizes, $_wp_additional_image_sizes );
     }
 
     /**
@@ -115,34 +183,6 @@ class Filters
         $file['name'] = "$file_time-$file_hash.$file_ext";
 
         return $file;
-    }
-
-    /**
-     * Get all the registered image sizes along with their dimensions
-     *
-     * @global array $_wp_additional_image_sizes
-     *
-     * @link http://core.trac.wordpress.org/ticket/18947 Reference ticket
-     *
-     * @return array $image_sizes The image sizes
-     */
-    public function get_all_image_sizes()
-    {
-        global $_wp_additional_image_sizes;
-
-        $default_image_sizes = get_intermediate_image_sizes();
-
-        foreach ( $default_image_sizes as $size ) {
-            $image_sizes[ $size ][ 'width' ] = intval( get_option( "{$size}_size_w" ) );
-            $image_sizes[ $size ][ 'height' ] = intval( get_option( "{$size}_size_h" ) );
-            $image_sizes[ $size ][ 'crop' ] = get_option( "{$size}_crop" ) ? get_option( "{$size}_crop" ) : false;
-        }
-
-        if ( isset( $_wp_additional_image_sizes ) && count( $_wp_additional_image_sizes ) ) {
-            $image_sizes = array_merge( $image_sizes, $_wp_additional_image_sizes );
-        }
-
-        return $image_sizes;
     }
 
     /**

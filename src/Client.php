@@ -129,9 +129,9 @@ class Client implements ClientInterface
      *
      * This sets context information
      */
-    public function set_context_option( $option = '', $value = false )
+    public function set_context_option( $option = '', $value = [] )
     {
-        if ( ! $this->client || ! $this->stream || empty( $option ) || ! $value ) {
+        if ( ! $this->client || ! $this->stream || empty( $option ) ) {
             return;
         }
 

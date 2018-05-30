@@ -113,7 +113,7 @@ class Settings extends AbstractSettings {
             'title'		    => 'Image Sizes',
             'page'			=> $this->page,
             'section'		=> 'wps3_metadata',
-            'description'   => 'Adds image sizes to the s3 metadata',
+            'description'   => 'Adds image size to attachment',
             'type'		    => 'checkbox', // text, textarea, password, checkbox
             'multi'		    => false,
             'option_group'	=> $this->page
