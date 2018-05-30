@@ -45,6 +45,10 @@ class Filters
      */
     public function wp_generate_attachment_metadata( $metadata, $attachment_id )
     {
+        if ( false === $this->client->options['wps3_metadata_imagesizes']) {
+            return $metadata;
+        }
+
         $sizes = $this->get_all_image_sizes();
         $pathinfo = pathinfo( $metadata['file'] );
 
