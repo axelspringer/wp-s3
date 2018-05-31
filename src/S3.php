@@ -10,7 +10,7 @@ use Aws\Credentials\CredentialProvider;
  *
  * @package AxelSpringer\WP\S3
  */
-class Plugin extends AbstractPlugin
+class S3 extends AbstractPlugin
 {
     /**
      * Client
@@ -40,16 +40,16 @@ class Plugin extends AbstractPlugin
     public function init()
     {
         // load options
-        $this->setup->load_options( 'AxelSpringer\WP\S3\__OPTION__' );
+        $this->setup->load_options( 'AxelSpringer\WP\S3\Option' );
         $this->settings = new Settings(
-            __( __TRANSLATE__::SETTINGS_PAGE_TITLE ),
-            __( __TRANSLATE__::SETTINGS_MENU_TITLE ),
-            __PLUGIN__::SETTINGS_PAGE,
-            __PLUGIN__::SETTINGS_PERMISSION,
+            __( Translate::SETTINGS_PAGE_TITLE ),
+            __( Translate::SETTINGS_MENU_TITLE ),
+            Config::SETTINGS_PAGE,
+            Config::SETTINGS_PERMISSION,
             $this->setup->version
         );
         // https://github.com/axelspringer/templeton
-        $this->setup->load_options( 'AxelSpringer\WP\S3\__SSM__' );
+        $this->setup->load_options( 'AxelSpringer\WP\S3\SSM' );
 
         // check for options
         if ( ! $this->setup->options[ 'wps3_endpoint' ]

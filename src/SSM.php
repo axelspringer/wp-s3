@@ -2,7 +2,7 @@
 
 namespace AxelSpringer\WP\S3;
 
-abstract class __SSM__
+abstract class SSM
 {
     const SSM_WPS3_BUCKET               = null;
     const SSM_WPS3_CREDENTIALS_CACHE    = true;

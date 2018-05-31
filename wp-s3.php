@@ -37,19 +37,19 @@ if ( file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
 	$loader->addPsr4( 'AxelSpringer\\WP\\S3\\', __DIR__ . '/src' );
 }
 
-use \AxelSpringer\WP\S3\__WP__ as WP;
-use \AxelSpringer\WP\S3\__PLUGIN__ as Plugin;
-use \AxelSpringer\WP\S3\Plugin as S3;
+use \AxelSpringer\WP\S3\WP;
+use \AxelSpringer\WP\S3\Config;
+use \AxelSpringer\WP\S3\S3;
 
 // bootstrap
 if ( ! defined( WP::VERSION ) )
-	define( WP::VERSION, Plugin::VERSION );
+	define( WP::VERSION, CONFIG::VERSION );
 
 if ( ! defined( WP::URL ) )
 	define( WP::URL, plugin_dir_url( __FILE__ ) );
 
 if ( ! defined( WP::SLUG ) )
-    define( WP::SLUG, Plugin::SLUG );
+    define( WP::SLUG, CONFIG::SLUG );
 
 // activation
 register_activation_hook( __FILE__, '\AxelSpringer\WP\S3\Plugin::activation' );

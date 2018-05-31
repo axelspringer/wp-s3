@@ -2,7 +2,7 @@
 
 namespace AxelSpringer\WP\S3;
 
-abstract class __WP__
+abstract class WP
 {
     // constants
     const VERSION   = 'WPS3_VERSION';

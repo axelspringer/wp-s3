@@ -21,7 +21,7 @@ class Settings extends AbstractSettings {
     {
         $args = array(
             'id'			  => 'wps3_general',
-            'title'			  => __( __TRANSLATE__::SETTINGS_SECTION_GENERAL, __PLUGIN__::TEXT_DOMAIN ),
+            'title'			  => __( Translate::SETTINGS_SECTION_GENERAL, Config::TEXT_DOMAIN ),
             'page'			  => $this->page,
             'description'	  => '',
         );
@@ -68,7 +68,7 @@ class Settings extends AbstractSettings {
 
         $args = array(
             'id'			  => 'wps3_credentials',
-            'title'			  => __( __TRANSLATE__::SETTINGS_SECTION_CREDENTIALS, __PLUGIN__::TEXT_DOMAIN ),
+            'title'			  => __( Translate::SETTINGS_SECTION_CREDENTIALS, Config::TEXT_DOMAIN ),
             'page'			  => $this->page,
             'description'	  => '',
         );
@@ -102,7 +102,7 @@ class Settings extends AbstractSettings {
 
         $args = array(
             'id'			  => 'wps3_metadata',
-            'title'			  => __( __TRANSLATE__::SETTINGS_SECTION_METADATA, __PLUGIN__::TEXT_DOMAIN ),
+            'title'			  => __( Translate::SETTINGS_SECTION_METADATA, Config::TEXT_DOMAIN ),
             'page'			  => $this->page,
             'description'	  => '',
         );
@@ -134,7 +134,7 @@ class Settings extends AbstractSettings {
 
         $args = array(
             'id'			  => 'wps3_advanced',
-            'title'			  => __( __TRANSLATE__::SETTINGS_SECTION_ADVANCED, __PLUGIN__::TEXT_DOMAIN ),
+            'title'			  => __( Translate::SETTINGS_SECTION_ADVANCED, Config::TEXT_DOMAIN ),
             'page'			  => $this->page,
             'description'	  => '',
         );
