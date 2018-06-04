@@ -47,8 +47,6 @@ class Filters
      */
     public function wp_handle_upload( $upload )
     {
-
-
         $this->client->set_metadata();
 
         return $upload;
@@ -81,9 +79,7 @@ class Filters
     {
         $metadata = array();
 
-        if ( false === $this->client->options['wps3_metadata_imagesizes']) {
-            return;
-        }
+        if ( empty( $this->client->options['wps3_metadata_imagesizes']) ) return;
 
         foreach( $sizes as $size => $data ) {
             $key = implode( '-', array( $prefix, $size) );
@@ -98,9 +94,7 @@ class Filters
      */
     public function wp_generate_attachment_metadata( $metadata, $attachment_id )
     {
-        if ( false === $this->client->options['wps3_metadata_imagesizes']) {
-            return $metadata;
-        }
+        if ( empty( $this->client->options['wps3_metadata_imagesizes']) ) return $metadata;
 
         $sizes = $this->get_additional_sizes( $metadata['file'] );
         $metadata['sizes'] = array_merge( $metadata['sizes'], $sizes );
@@ -138,9 +132,7 @@ class Filters
      */
     public function intermediate_image_sizes_advanced( $sizes, $metadata )
     {
-        if ( false === $this->client->options['wps3_metadata_imagesizes']) {
-            return $sizes;
-        }
+        if ( empty ( $this->client->options['wps3_metadata_imagesizes']) ) return $sizes;
 
         global $_wp_additional_image_sizes;
 
@@ -173,8 +165,7 @@ class Filters
      */
     public function filter_upload_prefilter( $file )
     {
-        if ( ! $this->client->options[ 'wps3_unique_filename' ] )
-            return $file;
+        if ( empty( $this->client->options[ 'wps3_unique_filename' ] ) ) return $file;
 
         $file_info  = pathinfo( $file['name'] );
         $file_hash  = crc32( json_encode( array( $file_info['basename'], current_time( 'mysql' ) ) ) );
