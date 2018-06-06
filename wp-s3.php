@@ -52,10 +52,10 @@ if ( ! defined( WP::SLUG ) )
     define( WP::SLUG, CONFIG::SLUG );
 
 // activation
-register_activation_hook( __FILE__, '\AxelSpringer\WP\S3\Plugin::activation' );
+register_activation_hook( __FILE__, '\AxelSpringer\WP\S3\S§::activation' );
 
 // deactivation
-register_deactivation_hook( __FILE__, '\AxelSpringer\WP\S3\Plugin::deactivation' );
+register_deactivation_hook( __FILE__, '\AxelSpringer\WP\S3\S3::deactivation' );
 
 // run
 global $wps3; // this bootstraps the plugin, and provides a global accessible helper
