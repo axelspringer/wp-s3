@@ -111,6 +111,9 @@ class Filters
         global $_wp_additional_image_sizes;
         $file = pathinfo( $file ) ;
 
+        if ( empty( $_wp_additional_image_sizes ) )
+            return $sizes;
+
         $sizes = [];
 
         foreach( $_wp_additional_image_sizes as $size => $data ) {
