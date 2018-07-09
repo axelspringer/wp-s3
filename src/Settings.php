@@ -141,6 +141,30 @@ class Settings extends AbstractSettings {
         $advanced = new Section( $args );
 
         $args = array(
+            'id'	        => 'wps3_endpoint_replace',
+            'title'		    => 'Replace S3 Endpoint',
+            'page'			=> $this->page,
+            'section'		=> 'wps3_advanced',
+            'description'   => 'This allows to overwrite the s3 endpoint url.',
+            'type'		    => 'checkbox', // text, textarea, password, checkbox
+            'multi'		    => false,
+            'option_group'	=> $this->page
+        );
+        $enable_s3_replace = new Field( $args );
+
+        $args = array(
+            'id'	        => 'wps3_endpoint_replace_url',
+            'title'		    => 'Replace S3 Endpoint URL',
+            'page'			=> $this->page,
+            'section'		=> 'wps3_advanced',
+            'description'   => 'The url that is used to replace the endpoint',
+            'type'		    => 'text', // text, textarea, password, checkbox
+            'multi'		    => false,
+            'option_group'	=> $this->page
+        );
+        $enable_s3_replace_url = new Field( $args );
+
+        $args = array(
             'id'	        => 'wps3_filter_attachments',
             'title'		    => 'Filter Attachments',
             'page'			=> $this->page,

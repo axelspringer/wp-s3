@@ -14,6 +14,8 @@ abstract class OPTION
     const WPS3_FILTER_ATTACHMENTS       = false;
     const WPS3_METADATA_CACHE_CONTROL   = false;
     const WPS3_METADATA_IMAGESIZES      = false;
+    const WPS3_ENDPOINT_REPLACE         = false;
+    const WPS3_ENDPOINT_REPLACE_URL     = false;
 }
 
 

@@ -17,7 +17,7 @@
  * Plugin Name: 		WordPress S3
  * Plugin URI: 			http://www.axelspringer.de
  * Description: 		A companion WordPress Plugin for S3.
- * Version: 			1.0.0-dev
+ * Version: 			1.0.2-dev
  * Author: 				Axel Springer SE
  * Author 				URI: http://www.axelspringer.de
  * License: 			Apache-2.0

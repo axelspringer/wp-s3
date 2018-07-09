@@ -40,6 +40,8 @@ class Filters
         add_filter( 'intermediate_image_sizes_advanced', array( &$this, 'intermediate_image_sizes_advanced' ), 99, 2 );
         add_filter( 'wp_generate_attachment_metadata', array( &$this, 'wp_generate_attachment_metadata' ), 99, 2 );
         add_filter( 'pre_move_uploaded_file', array( &$this, 'pre_move_uploaded_file' ), 99, 4 );
+        add_filter( 'wp_get_attachment_url', array( &$this, 'filter_endpoint_url' ), 99 );
+        add_filter( 'the_content', array( &$this, 'filter_endpoint_url' ), 99 );
     }
 
     /**
@@ -110,11 +112,12 @@ class Filters
     {
         global $_wp_additional_image_sizes;
         $file = pathinfo( $file ) ;
-
-        if ( empty( $_wp_additional_image_sizes ) )
-            return $sizes;
-
         $sizes = [];
+
+        if ( ! is_array( $_wp_additional_image_sizes ) ||
+            empty( $_wp_additional_image_sizes ) ) {
+            return $sizes;
+        }
 
         foreach( $_wp_additional_image_sizes as $size => $data ) {
             $new_size = array(
@@ -158,6 +161,25 @@ class Filters
             'error'   => false
         );
         return $param;
+    }
+
+    /**
+     * Filter endpoint string to new url
+     *
+     * @param string $url
+     * @return string $url
+     */
+    public function filter_endpoint_url( $str ) {
+        if ( ! $this->client->options[ 'wps3_endpoint_replace' ]
+        || empty( $this->client->options[ 'wps3_endpoint_replace_url' ] ) ){
+            return $str;
+        }
+
+        if ( empty( $this->client->options[ 'wps3_endpoint' ] ) ) {
+            return $str;
+        }
+
+        return str_replace( $this->client->options[ 'wps3_endpoint' ], $this->client->options[ 'wps3_endpoint_replace_url' ], $str );
     }
 
     /**
