@@ -170,7 +170,7 @@ class Filters
      * @return string $url
      */
     public function filter_endpoint_url( $str ) {
-        if ( ! $this->client->options[ 'wps3_endpoint_replace' ]
+        if ( is_admin() || ! $this->client->options[ 'wps3_endpoint_replace' ]
         || empty( $this->client->options[ 'wps3_endpoint_replace_url' ] ) ){
             return $str;
         }
